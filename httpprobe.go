@@ -13,13 +13,10 @@ import (
 
 func parseOptions() (options, error) {
 	opts := options{}
-	timeoutPtr := pflag.IntP("timeout", "t", 2000, "Request timeout in milliseconds")
-	retriesPtr := pflag.IntP("retries", "r", 2, "Retries")
-	backoffPtr := pflag.IntP("backoff", "b", 1000, "Exponential backoff interval in milliseconds")
+	pflag.IntVarP(&opts.timeout, "timeout", "t", 2000, "Request timeout in milliseconds")
+	pflag.IntVarP(&opts.retries, "retries", "r", 2, "Retries")
+	pflag.IntVarP(&opts.backoff, "backoff", "b", 1000, "Exponential backoff interval in milliseconds")
 	pflag.Parse()
-	opts.timeout = *timeoutPtr
-	opts.retries = *retriesPtr
-	opts.backoff = *backoffPtr
 	opts.url = pflag.Arg(0)
 	if opts.url == "" {
 		return options{}, errors.New("parseOptions: URL not given")
