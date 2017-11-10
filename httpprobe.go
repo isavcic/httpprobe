@@ -16,6 +16,7 @@ func parseOptions() (options, error) {
 	pflag.IntVarP(&opts.timeout, "timeout", "t", 2000, "Request timeout in milliseconds")
 	pflag.IntVarP(&opts.retries, "retries", "r", 2, "Retries")
 	pflag.IntVarP(&opts.backoff, "backoff", "b", 1000, "Exponential backoff interval in milliseconds")
+	pflag.StringVarP(&opts.host, "host", "H", "", "Host header")
 	pflag.Parse()
 	opts.url = pflag.Arg(0)
 	if opts.url == "" {
@@ -35,17 +36,17 @@ func makeGETRequest(opts options) bool {
 	req, err := retryablehttp.NewRequest("GET", opts.url, nil)
 	if err != nil {
 		fmt.Println(err)
-		// os.Exit(2)
 		return false
+	}
+	if opts.host != "" {
+		req.Host = opts.host
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		// os.Exit(2)
 		return false
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		// os.Exit(2)
 		return false
 	}
 	return true
@@ -68,5 +69,6 @@ type options struct {
 	timeout int
 	retries int
 	backoff int
+	host    string
 	url     string
 }
