@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	retryablehttp "github.com/hashicorp/go-retryablehttp"
 	"github.com/ogier/pflag"
+	retryablehttp "github.com/snabb/go-retryablehttp"
 )
 
 func parseOptions() (options, error) {
