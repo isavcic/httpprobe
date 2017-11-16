@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -28,8 +29,9 @@ func parseOptions() (options, error) {
 	return opts, nil
 }
 
-func makeGETRequest(opts options) bool {
+func makeGETRequest(opts *options) bool {
 	client := retryablehttp.NewClient()
+	client.Logger = log.New(os.Stderr, "", 0)
 	client.HTTPClient.Timeout = time.Duration(opts.timeout) * time.Millisecond
 	client.RetryMax = opts.retries
 	client.RetryWaitMin = time.Duration(opts.backoff) * time.Millisecond
@@ -58,7 +60,7 @@ func main() {
 		fmt.Println(err)
 		os.Exit(2)
 	}
-	if makeGETRequest(opts) {
+	if makeGETRequest(&opts) {
 		os.Exit(0)
 	} else {
 		os.Exit(2)
